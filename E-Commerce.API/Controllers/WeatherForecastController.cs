@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace E_Commerce.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class WeatherForecastController : ControllerBase
     {
+        //localhost:5001/api/WeatherForecast/
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
