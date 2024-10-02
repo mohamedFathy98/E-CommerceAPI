@@ -22,7 +22,7 @@ namespace Persistence.Repositories
         public void Delete(TEntity entity) => _storeContext.Set<TEntity>().Remove(entity);
 
         public void Update(TEntity entity) => _storeContext.Set<TEntity>().Update(entity);
-        public async Task<IEnumerable<TEntity>> GetAllAsync(bool trackChange) =>
+        public async Task<IEnumerable<TEntity>> GetAllAsync(bool trackChange = false) =>
 
                  //if (trackChange)
                  //return await _storeContext.Set<TEntity>().ToListAsync();
