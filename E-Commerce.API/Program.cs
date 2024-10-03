@@ -3,7 +3,9 @@ using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Data;
-
+using Persistence.Repositories;
+using Services;
+using Services.Abstractions;
 namespace E_Commerce.API
 {
     public class Program
@@ -14,8 +16,10 @@ namespace E_Commerce.API
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
-            builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+            builder.Services.AddControllers().AddApplicationPart(typeof(AssemblyReference).Assembly);
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddAutoMapper(typeof(AssemblyReference).Assembly);
+            builder.Services.AddScoped<IServicesManger, ServicesManger>();
 
             builder.Services.AddDbContext<StoreContext>(options =>
             {
@@ -34,7 +38,7 @@ namespace E_Commerce.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
