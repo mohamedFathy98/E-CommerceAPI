@@ -18,11 +18,11 @@ namespace Services.Specifications
 
         // use all products
         public ProductWithBrandAndTypeSpecification(string? sort, int? barndId, int? TypeId) :
-            base(product => (!barndId.HasValue || product.BrandId == barndId.Value) &&
-           (!TypeId.HasValue || product.TypeId == TypeId.Value))
+            base(product => (!barndId.HasValue || product.BrandId == barndId.Value) && (!TypeId.HasValue || product.TypeId == TypeId.Value))
         {
             AddInclude(product => product.ProductBrand);
             AddInclude(product => product.ProductType);
+
 
             if (string.IsNullOrWhiteSpace(sort))
             {
