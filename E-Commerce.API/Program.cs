@@ -17,6 +17,8 @@ namespace E_Commerce.API
             // Add services to the container.
 
             builder.Services.AddControllers().AddApplicationPart(typeof(AssemblyReference).Assembly);
+
+            builder.Services.AddScoped<IDbInitializer, DbInitializer>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddAutoMapper(typeof(AssemblyReference).Assembly);
             builder.Services.AddScoped<IServicesManger, ServicesManger>();
