@@ -26,7 +26,7 @@ namespace E_Commerce.API.Middlewares
             }
             catch (Exception ex)
             {
-                _logger.LogError($"something went error {ex}");
+                _logger.LogError($"Something Went error {ex}");
 
                 await HandleExceptionAsync(httpContext, ex);
 
