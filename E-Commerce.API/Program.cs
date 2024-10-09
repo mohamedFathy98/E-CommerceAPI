@@ -1,5 +1,6 @@
 
 using Domain.Contracts;
+using E_Commerce.API.Middlewares;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Data;
@@ -32,6 +33,7 @@ namespace E_Commerce.API
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+            app.UseMiddleware<GlobalErrorHandlingMiddleware>();
             await InitializeDbAsync(app);
 
             // Configure the HTTP request pipeline.

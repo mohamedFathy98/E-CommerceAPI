@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Domain.Entites;
 using Services.Specifications;
+using Domain.Exceptions;
 
 namespace Services
 {
@@ -51,7 +52,7 @@ namespace Services
             var product = await unitOfWork.GetRepository<Product, int>()
                 .GetAsync(new ProductWithBrandAndTypeSpecification(id));
             var productResult = mapper.Map<ProductResultDTO>(product);
-            return productResult;
+            return product is null ? throw new ProductNotFoundException(id) : mapper.Map<ProductResultDTO>(product);
         }
     }
 }
