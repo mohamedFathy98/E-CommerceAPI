@@ -24,6 +24,7 @@ namespace Services.Specifications
             AddInclude(product => product.ProductBrand);
             AddInclude(product => product.ProductType);
 
+            ApplyPagination(parameters.pageIndex, parameters.pageSize);
 
             if (parameters.Sort is not null)
             {
