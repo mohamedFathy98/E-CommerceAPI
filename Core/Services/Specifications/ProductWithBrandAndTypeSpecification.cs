@@ -17,26 +17,30 @@ namespace Services.Specifications
         }
 
         // use all products
-        public ProductWithBrandAndTypeSpecification(string? sort, int? barndId, int? TypeId) :
-            base(product => (!barndId.HasValue || product.BrandId == barndId.Value) && (!TypeId.HasValue || product.TypeId == TypeId.Value))
+        public ProductWithBrandAndTypeSpecification(ProductSpecificationsParameters parameters) :
+            base(product => (!parameters.BrandId.HasValue || product.BrandId == parameters.BrandId) && 
+            (!parameters.TypeId.HasValue || product.TypeId == parameters.TypeId))
         {
             AddInclude(product => product.ProductBrand);
             AddInclude(product => product.ProductType);
 
 
-            if (string.IsNullOrWhiteSpace(sort))
+            if (parameters.Sort is not null)
             {
-                switch (sort.ToLower().Trim())
+                switch (parameters.Sort)
                 {
-                    case "pricedesc":
-                        SetOrderByDescending(p => p.Price); break;
-                    case "priceasc":
-                        SetOrderBy(p => p.Price); break;
-                    case "namedesc":
+                    case ProductSortingOptions.NameDesc:
                         SetOrderByDescending(p => p.Name); break;
+                    case ProductSortingOptions.NameAsc:
+                        SetOrderBy(p => p.Name); break;
+                    case ProductSortingOptions.PriceDesc:
+                        SetOrderByDescending(p => p.Price); break;
+                    case ProductSortingOptions.PriceAsc:
+                        SetOrderBy(p => p.Price); break;
+
 
                     default:
-                        SetOrderBy(p => p.Name);
+
                         break;
                 }
             }

@@ -15,8 +15,8 @@ namespace Domain.Contracts
         }
 
         public Expression<Func<T, bool>>? Critera { get; }
-        public Expression<Func<T, object>> OrderBy { get; private set; }
-        public Expression<Func<T, object>> OrderByDescending { get; private set; }
+        public Expression<Func<T, object>>? OrderBy { get; private set; }
+        public Expression<Func<T, object>>? OrderByDescending { get; private set; }
 
         public List<Expression<Func<T, object>>> IncludesExpression { get; } = new();
 
