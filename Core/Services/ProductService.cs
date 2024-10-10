@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Domain.Entites;
 using Services.Specifications;
+using Domain.Exceptions;
 
 namespace Services
 {
@@ -25,12 +26,18 @@ namespace Services
             return barndResult;
         }
 
-        public async Task<IEnumerable<ProductResultDTO>> GetAllProductsAsync(string? sort, int? barndId, int? TypeId)
+        public async Task<PaginatedResult<ProductResultDTO>> GetAllProductsAsync(ProductSpecificationsParameters parameters)
         {
             var products = await unitOfWork.GetRepository<Product, int>()
-                  .GetAllAsync(new ProductWithBrandAndTypeSpecification(sort, barndId, TypeId));
+                  .GetAllAsync(new ProductWithBrandAndTypeSpecification(parameters));
             var productsResult = mapper.Map<IEnumerable<ProductResultDTO>>(products);
-            return productsResult;
+            var count = productsResult.Count();
+            var TotalCount = await unitOfWork.GetRepository<Product, int>()
+                .CountAsync(new ProductCountSpecification(parameters));
+            var result = new PaginatedResult<ProductResultDTO>(parameters.pageIndex, count,
+              TotalCount,
+             productsResult);
+            return result;
         }
 
         public async Task<IEnumerable<TypeResultDTO>> GetAllTypesAsync()
@@ -45,7 +52,7 @@ namespace Services
             var product = await unitOfWork.GetRepository<Product, int>()
                 .GetAsync(new ProductWithBrandAndTypeSpecification(id));
             var productResult = mapper.Map<ProductResultDTO>(product);
-            return productResult;
+            return product is null ? throw new ProductNotFoundException(id) : mapper.Map<ProductResultDTO>(product);
         }
     }
 }
