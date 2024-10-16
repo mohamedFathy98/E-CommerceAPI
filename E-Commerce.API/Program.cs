@@ -19,7 +19,7 @@ namespace E_Commerce.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddCoreServices();
+            builder.Services.AddCoreServices(builder.Configuration);
             builder.Services.AddInfraStructureServices(builder.Configuration);
             builder.Services.AddPresentationServices();
         
@@ -36,7 +36,7 @@ namespace E_Commerce.API
             }
             app.UseStaticFiles();
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
