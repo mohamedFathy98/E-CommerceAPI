@@ -41,7 +41,7 @@ namespace Services
             if (!result.Succeeded)
             {
                 var errors = result.Errors.Select(e => e.Description).ToList();
-                // throw new Domain.Exceptions.ValidationException(errors);
+                throw new ValidationException(errors);
 
             }
             return new UserResultDTO(user.DisplayName,
