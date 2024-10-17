@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
 using Shared;
 using System;
@@ -10,9 +11,8 @@ using System.Threading.Tasks;
 
 namespace Presentation
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductsController(IServicesManger ServicesManger) : ControllerBase
+    [Authorize(Roles ="Admin")]
+    public class ProductsController(IServicesManger ServicesManger) : ApiController
     {
         [HttpGet]
         public async Task<ActionResult<PaginatedResult<ProductResultDTO>>> GetAllProducts([FromQuery]ProductSpecificationsParameters parameters)
