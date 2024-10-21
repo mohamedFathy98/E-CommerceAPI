@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Services.Specifications;
 
 namespace Services
 {
@@ -52,19 +53,28 @@ namespace Services
          => new OrderItem(new ProductInOrderItem(product.Id, product.Name, product.PictureUrl),
             item.Quantity, product.Price);
 
-        public Task<IEnumerable<DeliveryMethodResult>> GetDeliveryMethodsAsync()
+        public async Task<IEnumerable<DeliveryMethodResult>> GetDeliveryMethodsAsync()
         {
-            throw new NotImplementedException();
+            var methods = await unitOfWork.GetRepository<DeliveryMethod, int>()
+               .GetAllAsync();
+            return mapper.Map<IEnumerable<DeliveryMethodResult>>(methods);
         }
 
-        public Task<IEnumerable<OrderResult>> GetOrderByEmailAsync(string email)
+        public async Task<IEnumerable<OrderResult>> GetOrderByEmailAsync(string email)
         {
-            throw new NotImplementedException();
+            var orders = await unitOfWork.GetRepository<Order, Guid>()
+                       .GetAllAsync(new OrderWithIncludeSpecification(email));
+
+            return mapper.Map<IEnumerable<OrderResult>>(orders);
+
         }
 
-        public Task<OrderResult> GetOrderByIdAsync(Guid id)
+        public async Task<OrderResult> GetOrderByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var order = await unitOfWork.GetRepository<Order, Guid>()
+                .GetAsync(new OrderWithIncludeSpecification(id))
+                ?? throw new OrderNotFoundException(id);
+            return mapper.Map<OrderResult>(order);
         }
     }
 }
