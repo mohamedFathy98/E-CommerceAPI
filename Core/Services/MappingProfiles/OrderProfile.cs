@@ -1,4 +1,5 @@
 ﻿using Domain.Entites.OrderEntities;
+using userAddress = Domain.Entites.OrderEntities.Address;
 using Shared.OrderModels;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,7 @@ namespace Services.MappingProfiles
                (s => s.SubTotal + s.DeliveryMethod.Price));
 
             CreateMap<DeliveryMethod, DeliveryMethodResult>();
+            CreateMap<AddressDTO, userAddress>().ReverseMap();
         }
     }
 }
