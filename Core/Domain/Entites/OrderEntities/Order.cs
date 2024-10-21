@@ -10,10 +10,24 @@ namespace Domain.Entites.OrderEntities
     
         public class Order : BaseEntity<Guid>
         {
-         
+        public Order() { }
+        public Order(string userEamil, Address shippingAddress, ICollection<OrderItem> orderItems,
+           DeliveryMethod deliveryMethod,
+             decimal subTotal)
+        {
+            Id = Guid.NewGuid();
+            UserEamil = userEamil;
+            ShippingAddress = shippingAddress;
+            OrderItems = orderItems;
+            DeliveryMethod = deliveryMethod;
 
-            //User Email
-            public string UserEamil { get; set; }
+            SubTotal = subTotal;
+
+        }
+
+
+        //User Email
+        public string UserEamil { get; set; }
 
             //Address
             public Address ShippingAddress { get; set; }

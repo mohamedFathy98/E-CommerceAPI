@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿global using UserAddress = Domain.Entites.Address;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
+using Domain.Entites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 
 
 namespace Persistence.Identity
@@ -14,7 +18,7 @@ namespace Persistence.Identity
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<Address>().ToTable("Addresses");
+            builder.Entity<UserAddress>().ToTable("Addresses");
         }
     }
 }
