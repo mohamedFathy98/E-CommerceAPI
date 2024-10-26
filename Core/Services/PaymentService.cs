@@ -2,6 +2,7 @@
 using Domain.Entites.OrderEntities;
 using Domain.Exceptions;
 using Microsoft.Extensions.Configuration;
+using Services.Specifications;
 using Stripe;
 using System;
 using System.Collections.Generic;
@@ -67,5 +68,51 @@ namespace Services
             await basketRepository.UpdaateBasketAsync(basket);
             return mapper.Map<BasketDTO>(basket);
         }
+        public async Task UpdateOrderPaymentStatus(string request, string stripeHeader)
+        {
+            var endPointSecret = configuration.GetRequiredSection("StripeSettings")["EndPointSecret"];
+
+            var stripeEvent = EventUtility.ConstructEvent(request, stripeHeader, endPointSecret);
+
+            var paymentIntent = stripeEvent.Data.Object as PaymentIntent;
+            switch (stripeEvent.Type)
+            {
+                case EventTypes.PaymentIntentPaymentFailed:
+                    await UpdatePaymentStatusFailed(paymentIntent.Id);
+                    break;
+                case EventTypes.PaymentIntentSucceeded:
+                    await UpdatePaymentStatusRecived(paymentIntent.Id);
+                    break;
+                default:
+                    Console.WriteLine("Unhandled event type:{0}", stripeEvent.Type);
+                    break;
+            }
+
+
+
+        }
+        private async Task UpdatePaymentStatusFailed(string paymentIntentId)
+        {
+            var order = await unitOfWork.GetRepository<Order, Guid>()
+                .GetAsync(new OrderWithPaymentIntentIdSpecification(paymentIntentId))
+              ?? throw new Exception();
+
+            order.PaymentStatus = OrderPaymentStatus.PaymentFailed;
+            unitOfWork.GetRepository<Order, Guid>().Update(order);
+
+            await unitOfWork.SaveChangesAsync();
+        }
+        private async Task UpdatePaymentStatusRecived(string paymentIntentId)
+        {
+            var order = await unitOfWork.GetRepository<Order, Guid>()
+               .GetAsync(new OrderWithPaymentIntentIdSpecification(paymentIntentId))
+             ?? throw new Exception();
+
+            order.PaymentStatus = OrderPaymentStatus.PaymentReceiveed;
+            unitOfWork.GetRepository<Order, Guid>().Update(order);
+
+            await unitOfWork.SaveChangesAsync();
+        }
+
     }
 }

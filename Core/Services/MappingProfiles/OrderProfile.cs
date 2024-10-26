@@ -38,7 +38,9 @@ namespace Services.MappingProfiles
                options => options.MapFrom
                (s => s.SubTotal + s.DeliveryMethod.Price));
 
-            CreateMap<DeliveryMethod, DeliveryMethodResult>();
+            CreateMap<DeliveryMethod, DeliveryMethodResult>().
+               ForMember(d => d.Cost,
+               options => options.MapFrom(s => s.Price));
             CreateMap<AddressDTO, userAddress>().ReverseMap();
         }
     }

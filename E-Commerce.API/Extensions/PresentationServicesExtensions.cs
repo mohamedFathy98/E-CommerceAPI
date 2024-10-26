@@ -17,6 +17,17 @@ namespace E_Commerce.API.Extensions
             });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.ConfigureSwagger();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CORSPolicy", bulider =>
+                {
+                    bulider.AllowAnyHeader()
+                     .AllowAnyMethod()
+                     .WithOrigins("http://localhost:4200");
+
+
+                });
+            });
             return services;
 
 

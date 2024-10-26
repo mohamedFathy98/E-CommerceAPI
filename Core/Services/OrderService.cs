@@ -18,7 +18,7 @@ namespace Services
         public async Task<OrderResult> CreateOrUpdateOrderAsync(OrderRequest orderRequest, string userEmail)
         {
             //1. Address
-            var address = mapper.Map<Domain.Entites.OrderEntities.Address>(orderRequest.ShippingAddress);
+            var address = mapper.Map<Domain.Entites.OrderEntities.Address>(orderRequest.shipToAddress);
             //2. order Items => Basket => Basket items => order Items
             var basket = await basketRepository.GetBasketAsync(orderRequest.BasketId)
             ?? throw new BasketNotFoundException(orderRequest.BasketId);
