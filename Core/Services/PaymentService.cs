@@ -61,7 +61,6 @@ namespace Services
                 var updateOptions = new PaymentIntentUpdateOptions
                 {
                     Amount = amount,
-
                 };
                 await service.UpdateAsync(basket.PaymentIntentId, updateOptions);
             }
