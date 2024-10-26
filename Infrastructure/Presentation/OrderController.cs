@@ -38,7 +38,7 @@ namespace Presentation
             var orders = await serviceManager.OrderService.GetOrderByIdAsync(id);
             return Ok(orders);
         }
-        [AllowAnonymous]
+       
         [HttpGet("DeliveryMethods")]
         public async Task<ActionResult<DeliveryMethodResult>> GetDeliveryMethods()
         {
