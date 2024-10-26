@@ -15,14 +15,15 @@ namespace Services
         IMapper mapper,
         IBasketRepository basketRepository) : IOrderService
     {
-        public async Task<OrderResult> CreateOrderAsync(OrderRequest orderRequest, string userEmail)
+        public async Task<OrderResult> CreateOrUpdateOrderAsync(OrderRequest orderRequest, string userEmail)
         {
             //1. Address
             var address = mapper.Map<Domain.Entites.OrderEntities.Address>(orderRequest.ShippingAddress);
             //2. order Items => Basket => Basket items => order Items
             var basket = await basketRepository.GetBasketAsync(orderRequest.BasketId)
             ?? throw new BasketNotFoundException(orderRequest.BasketId);
-
+            var deliveryMethod = await unitOfWork.GetRepository<DeliveryMethod, int>()
+              .GetAsync(orderRequest.DeliveryMethodId) ?? throw new DeliveryMethodNotFoundException(orderRequest.DeliveryMethodId);
             var orderItems = new List<OrderItem>();
             foreach (var item in basket.Items)
             {
@@ -30,18 +31,23 @@ namespace Services
                     .GetAsync(item.Id) ?? throw new ProductNotFoundException(item.Id);
                 orderItems.Add(CreateOrderItem(item, product));
             }
-            // 3.Delivery 
-            var deliveryMethod = await unitOfWork.GetRepository<DeliveryMethod, int>()
-                .GetAsync(orderRequest.DeliveryMethodId) ?? throw new DeliveryMethodNotFoundException(orderRequest.DeliveryMethodId);
+     
+          
+            var orderRepo = unitOfWork.GetRepository<Order, Guid>();
+            var existingOrder = await orderRepo.GetAsync(new OrderWithPaymentIntentIdSpecification(
+           basket.PaymentIntentId!));
+            if (existingOrder is not null)
+            {
+                orderRepo.Delete(existingOrder);
+            }
             // 4.sub Total
+
             var subtotal = orderItems.Sum(item => item.Price * item.Quantity);
 
 
             // save to db
-            var order = new Order(userEmail, address, orderItems, deliveryMethod, subtotal);
-
-            await unitOfWork.GetRepository<Order, Guid>()
-                .AddAsync(order);
+            var order = new Order(userEmail, address, orderItems, deliveryMethod, subtotal,basket.PaymentIntentId!);
+            await orderRepo.AddAsync(order);
             await unitOfWork.SaveChangesAsync();
 
 
