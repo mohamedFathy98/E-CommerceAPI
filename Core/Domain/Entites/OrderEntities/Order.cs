@@ -13,7 +13,7 @@ namespace Domain.Entites.OrderEntities
         public Order() { }
         public Order(string userEamil, Address shippingAddress, ICollection<OrderItem> orderItems,
            DeliveryMethod deliveryMethod,
-             decimal subTotal)
+             decimal subTotal, string paymentIntentId)
         {
             Id = Guid.NewGuid();
             UserEamil = userEamil;
@@ -22,7 +22,7 @@ namespace Domain.Entites.OrderEntities
             DeliveryMethod = deliveryMethod;
 
             SubTotal = subTotal;
-
+            PaymentIntentId = paymentIntentId;
         }
 
 
@@ -50,7 +50,7 @@ namespace Domain.Entites.OrderEntities
 
             //Payment
 
-            public string PaymentIntentId { get; set; } = string.Empty;
+            public string PaymentIntentId { get; set; } 
 
             //Order Date
             public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;

@@ -19,7 +19,7 @@ namespace Presentation
         public async Task<ActionResult<OrderResult>> Create(OrderRequest request)
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
-            var order = await serviceManager.OrderService.CreateOrderAsync(request, email);
+            var order = await serviceManager.OrderService.CreateOrUpdateOrderAsync(request, email);
             return Ok(order);
         }
 
@@ -38,7 +38,7 @@ namespace Presentation
             var orders = await serviceManager.OrderService.GetOrderByIdAsync(id);
             return Ok(orders);
         }
-        [AllowAnonymous]
+       
         [HttpGet("DeliveryMethods")]
         public async Task<ActionResult<DeliveryMethodResult>> GetDeliveryMethods()
         {
